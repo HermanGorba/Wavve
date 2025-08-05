@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Wavve.Core.Models;
 
-namespace Wavve.Identity.Entities
+namespace Wavve.Core.Identity
 {
     public class ApplicationUser : IdentityUser<Guid>
     {

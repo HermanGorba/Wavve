@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Wavve.Identity.Entities;
+using Wavve.Core.Identity;
 
 namespace Wavve.Api.Data
 {
@@ -7,7 +7,7 @@ namespace Wavve.Api.Data
     {
         public static async Task InitializeAsync(IServiceProvider serviceProvider)
         {
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
@@ -16,7 +16,7 @@ namespace Wavve.Api.Data
             {
                 if (!await roleManager.RoleExistsAsync(role))
                 {
-                    await roleManager.CreateAsync(new IdentityRole(role));
+                    await roleManager.CreateAsync(new IdentityRole<Guid>(role));
                 }
             }
 
