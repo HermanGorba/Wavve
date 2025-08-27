@@ -191,10 +191,16 @@ public class AuthController : ControllerBase
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = true, // HTTPS
-            SameSite = SameSiteMode.Strict,
+            Secure = false, // In development: false, in production: true
+            SameSite = SameSiteMode.Lax, // Lax allows cross-port requests
             Expires = DateTime.UtcNow.AddDays(7)
         };
+
+        if (!_configuration.GetValue<bool>("IsDevelopment", true))
+        {
+            cookieOptions.Secure = true;
+            cookieOptions.SameSite = SameSiteMode.Strict;
+        }
 
         Response.Cookies.Append("auth_token", token, cookieOptions);
     }
