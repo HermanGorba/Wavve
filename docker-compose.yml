@@ -1,0 +1,34 @@
+﻿version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: yourpassword
+      MYSQL_DATABASE: wavve_db
+      MYSQL_USER: wavveuser
+      MYSQL_PASSWORD: wavvepass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  wavveapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: server=mysql;port=3306;database=wavve_db;user=wavveuser;password=wavvepass
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - mysql
+    volumes:
+      - nuget_cache:/root/.nuget/packages
+    command: ["dotnet", "Wavve.Api.dll"]
+
+volumes:
+  mysql_data:
+  nuget_cache:
