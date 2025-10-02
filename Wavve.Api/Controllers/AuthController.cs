@@ -117,7 +117,13 @@ public class AuthController : ControllerBase
 
         SetAuthCookie(token);
 
-        return Ok(new { message = "Login successful" });
+        return Ok(new
+        {
+            token,
+            expiration = DateTime.UtcNow.AddDays(7),
+            message = "Login successful"
+        });
+
     }
 
     [HttpGet("checkAuth")]
