@@ -117,13 +117,7 @@ public class AuthController : ControllerBase
 
         SetAuthCookie(token);
 
-        return Ok(new
-        {
-            token,
-            expiration = DateTime.UtcNow.AddDays(7),
-            message = "Login successful"
-        });
-
+        return Ok(new { message = "Login successful" });
     }
 
     [HttpGet("checkAuth")]
@@ -197,9 +191,9 @@ public class AuthController : ControllerBase
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
-            Secure = false, // In development: false, in production: true
-            SameSite = SameSiteMode.Lax, // Lax allows cross-port requests
-            Expires = DateTime.UtcNow.AddDays(7)
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Expires = DateTime.UtcNow.AddDays(7),
         };
 
         if (!_configuration.GetValue<bool>("IsDevelopment", true))

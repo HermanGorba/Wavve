@@ -1,6 +1,4 @@
-﻿version: "3.9"
-
-services:
+﻿services:
   mysql:
     image: mysql:8.0
     environment:
@@ -12,6 +10,11 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pyourpassword"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   wavveapi:
     build:
@@ -19,12 +22,12 @@ services:
       dockerfile: Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__Default: server=mysql;port=3306;database=wavve_db;user=wavveuser;password=wavvepass
+      ConnectionStrings__DefaultConnection: server=mysql;port=3306;database=wavve_db;user=wavveuser;password=wavvepass
     ports:
       - "8080:8080"
-      - "8081:8081"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     volumes:
       - nuget_cache:/root/.nuget/packages
     command: ["dotnet", "Wavve.Api.dll"]

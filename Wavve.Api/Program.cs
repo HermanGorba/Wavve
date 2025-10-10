@@ -47,14 +47,15 @@ builder.Services.AddAuthentication(options =>
     
     options.Events = new JwtBearerEvents
     {
-        OnMessageReceived = ctx =>
+        OnMessageReceived = context =>
         {
-            if (ctx.Request.Cookies.ContainsKey("auth_token"))
+            if (context.Request.Cookies.TryGetValue("auth_token", out var token))
             {
-                ctx.Token = ctx.Request.Cookies["auth_token"];
+                context.Token = token;
             }
             return Task.CompletedTask;
         }
+
     };
 });
 
@@ -74,6 +75,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Wavve API", Version = "v1" });
@@ -99,7 +101,6 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-
 
 var app = builder.Build();
 
